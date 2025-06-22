@@ -5,7 +5,7 @@ This repository contains various resources (_e.g., checklists, settings, system 
 The purpose is to ensure **replicability**; resulting in **standardized** Open WebUI deployments.
 
 > [!NOTE]
-> I am not affiliated in any way with [Open WebUI](https://openwebui.com). I want to emphasize that this is simply a method for me to clearly "document" how my personal Open WebUI instance is configured.
+> I am not affiliated in any way with [Open WebUI](https://openwebui.com). I want to emphasize that this repository is a way for me to clearly "document" how my personal Open WebUI instance is configured.
 
 ## 💭 Use Case
 
