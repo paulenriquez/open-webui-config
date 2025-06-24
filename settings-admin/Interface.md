@@ -11,7 +11,7 @@ Any low-cost, low-latency LLM that supports structured outputs can work.
 I've had good experience with **Gemini 2.0 Flash** on:
 
 - Its consistency with following the task prompt templates & instructions
-- Quality of outputs (especially follow-up questions, search & retrieval queries)
+- Quality of outputs (especially follow-up prompts and search & retrieval queries)
 - Language adaptability (i.e., non-English outputs)
 
 There are other models with comparable performance, but Gemini 2.0 Flash is the best option when considering its cost-to-performance ratio.
@@ -72,120 +72,206 @@ Response must be in the specified JSON format; no extra text or formatting.
 
 Based on Open WebUI's [Default Follow-Up Prompt](https://docs.openwebui.com/getting-started/env-configuration/#tasks), but has been modified to...
 
-- include dedicated "Context" and "Process" sections that better specifies how follow-up questions are to be formulated.
-- express the follow-up questions to the prevalent style of the conversation through comprehensive writing style guidelines.
-- refine how questions are formatted.
+- better specify the framework on how follow-up prompts are to be formulated.
+- express the follow-ups using the prevalent tone and style of the conversation through comprehensive writing style guidelines.
+- refine how follow-ups are formed (either as a "question" or as a "request").
 
 ```
 ### Task:
 
-Suggest 3-5 relevant follow-up questions, based on the chat history, to aid the user in further exploring the subject of the conversation.
+Suggest 3-5 relevant follow-up prompts that the user can ask the AI assistant, based on the chat history, to aid the user in further exploring the subject of the conversation.
 
 ### Context:
 
-The chat history is a conversation snippet between a user and an AI assistant.
+- The chat history is a conversation snippet between a user and an AI assistant.
 
-### Process:
+- The current datetime is: "{{CURRENT_DATETIME}} UTC"
 
-1. **Analyze Context:** Carefully review the provided chat history to identify the core subject, its most recent focus, and any key concepts already discussed or left open.
+- The user's location is: "{{USER_LOCATION}}"
 
-2. **Determine User Intent:** From the user's perspective — infer logical next steps, deeper dives into sub-topics, related concepts, practical applications, potential challenges, or contrasting viewpoints that the user might want to explore.
+- The user's selected language is: "{{USER_LANGUAGE}}"
 
-3. **Formulate Questions:** Based on the user's intent, craft 3-5 distinct questions that the user should ask the AI assistant.
+### Framework for Follow-ups:
 
-### Guidelines:
+Review the provided chat history and determine the core subject, its most recent focus, and any key concepts that have already been covered or are still left open.
 
-- Express questions from the **user's point of view**, addressed to the AI assistant.
+Then, from the user's perspective — evaluate the following "angles for follow-ups" and assess which of these would make for sensible follow-ups prompts:
 
-- Always keep each question simple and concise. **DO NOT** write multi-part questions.
+**IMPORTANT**: If the chat history is short and early (i.e., messages contain only greetings and introductions), AND there isn't any apparent topic being covered yet, then it is okay to **NOT** suggest any follow-ups yet.
 
-- When referencing text from the chat history, **DO NOT** include any markdown formatting — e.g., bold ('**'), italics ('*' or '-'), and strikethroughs ('~~')
+#### Angles for Follow-ups:
 
-- **DO NOT** form questions that ask the AI assistant what it wants to discuss, explore, or do next (**remember:** the user determines the direction of the conversation, NOT the AI assistant!).
+1. Depth:
+- **Purpose:** Prompts for more granular and detailed information.
+- **Examples:**
+  - "Elaborate on the [specific concept] you just mentioned."
+  - "What is the key evidence or data that supports this statement?"
+  - "Break down the underlying mechanism of [X] into simpler terms."
+  - "Can you provide a specific, real-world example of that in practice?"
 
-- **DO NOT** create questions that lead to answers which repeat what has already been covered.
+2. Breadth:
+- **Purpose:** Prompts that connect the current topic to related domains, different contexts, or future possibilities.
+- **Examples:**
+  - "How does this concept apply in a completely different field, like [e.g., urban planning]?"
+  - "Analyze this from the perspective of a [e.g., financial analyst]."
+  - "What are the historical precedents that led to this idea?"
+  - "Project the potential evolution of this topic over the next decade."
+
+3. Practical Applications
+- **Purpose:** Prompts that turn abstract discussion into concrete, actionable artifacts like plans, lists, or steps.
+- **Examples:**
+  - "Generate a step-by-step plan to implement this strategy."
+  - "What would be the first three steps to test this idea with minimal investment?"
+  - "List the essential tools and resources needed to get started on this."
+  - "How can the success of such an initiative be measured effectively?"
+
+4. Contextual Application
+- **Purpose:** Prompts to tailor, filter, or reformat its knowledge for a specific audience or context.
+- **Examples:**
+  - "How would this strategy need to change for a non-profit organization?"
+  - "Adapt this advice for a team working with a very limited budget."
+  - "Rephrase the technical parts of your last response into a simple analogy."
+  - "What is the single most relevant part of this discussion for someone in a [e.g., product management] role?"
+
+5. Risks & Challenges
+- **Purpose:** Prompts that assess risks, potential challenges, criticalities, weaknesses, or roadblocks.
+- **Examples:**
+  - "What are the most significant challenges or risks in pursuing this approach?"
+  - "Play devil's advocate and critique the plan we've just outlined."
+  - "Identify the core assumptions this argument is based on."
+  - "What are the potential unintended negative consequences of taking this action?"
+
+6. Balanced Perspective
+- **Purpose:** Prompts that deliberately seek out alternative and/or contrasting viewpoints, counter-arguments, and comparative analyses.
+- **Examples:**
+  - "What's the strongest counter-argument to this position?"
+  - "Compare this approach with its main alternative, [e.g., the 'Lean Startup' methodology]."
+  - "Why might a well-informed expert disagree with this conclusion?"
+  - "Present an alternative theory that could also explain these facts."
+
+7. Timeliness and Proximity
+- **Purpose:** Prompts that connect the topic to the user's current datetime and location (**ONLY IF LOCATION IS NOT "UNKNOWN"**), making the information more immediate and personally actionable.
+- **Important considerations on usage of datetime and location:**
+  - If the location is known (its values is not "UNKNOWN") — it will contain raw lat/long coordinates. **NEVER** use these raw coordinates in the output. Instead, convert this to a human-readable **city name** and/or **country name**.
+  - The current datetime **is in UTC**. If the location is known (its values is not "UNKNOWN"), convert the datetime to the relevant timezone before using it in the output.
+- **Examples:**
+  - "What are the latest developments on [topic] as of today?"
+  - "Are there any [conferences, events, meetups] related to [topic] happening soon in [user's city]?"
+  - "Has [person or company] released anything new in [current year]?"
+  - "List some local experts or businesses in [user's city] that specialize in [topic]."
+
+### Form:
+
+A follow-up can be formed either as a **Question** or a **Request**.
+
+**Examples of QUESTIONS:** "What are the alternatives...", "How can I...", "Why is...", "Can you please show me...", etc.
+
+**Examples of REQUESTS:** "Suggest a method...", "Critique my plan...", "Rephrase this for...", "Describe this from the perspective of...", "Elaborate on...", etc.
+
+Freely use the form that can express the follow-up in the clearest, shortest, and most concise way possible.
 
 ### Writing Style:
 
-#### Principle:
+#### Profiles:
 
-As a default, questions must be expressed in an "objective and semi-formal" manner, **while maintaining some flexibility** to match the user's or AI assistant's writing style whenever appropriate.
+Consider two (2) "writing style profiles" when writing follow-ups:
 
-#### Default style:
+1. **STANDARD PROFILE**:
+- This is the default writing style. Follow-up prompts are written...
+  - in an objective and semi-formal manner.
+  - using the conversation's most prevalent language (user's selected language is the default; fallback to English if unsure)
+  - **WITHOUT** any markdown formatting (e.g., bold ('**'), italics ('*' or '-'), and strikethroughs ('~~'))
 
-- Objective and semi-formal
-- Uses the conversation's most prevalent language (English is default)
+2. **ADAPTIVE PROFILE**:
+- Requires the **perfect mirroring of the overall prevalent writing style of both the user and the AI assistant** — such that it feels as if the follow-ups were written by the conversation's participants themselves.
+- To achieve this, adhering to these rules is a **MUST:**
+  - **Language (Code Switching):** If the conversation mixes languages, the follow-up must also use this style in a similar proportion.
+  - **Word Choice:** Adopt the specific vocabulary, idioms, and slang used in the conversation.
+  - **Spelling:** All spelling choices must be replicated, even if they are technically incorrect (e.g., 'u' for 'you', 'pls' for 'please').
+  - **Capitalization:** Precisely match the capitalization style (e.g., if the conversation is in all lowercase, the follow-ups must be in all lowercase).
+  - **Rhythm:** Mimic the the sentence structure and rhythm (e.g., if messages are short and fragmented, the follow-ups must be similarly brief).
+  - **Punctuation:** All punctuation choices must be replicated exactly (e.g., if periods are omitted, they must be omitted in the output. If multiple exclamation points or question marks are used, they must be used in the same way.)
+  - **Emojis and Formatting:** Use relevant emojis and markdown formatting (bold, italics, etc.) with similar frequency as that of the conversation.
+- This profile is to be used in highly informal/creative conversations. Hence, **adhering to the above rules takes priority over maintaining formal correctness.**
 
-#### When to employ flexibility?
+#### Criteria:
 
-Based on the chat history, rate the overall conversation's "communication mode" (taking into account BOTH the user's and AI assistant's messages) on a scale of 1-5:
+Use the "communication mode" as the criteria to determine which "writing style profile" to use.
 
-**Communication Modes:**
+**Communication Mode:**
 
-1 = HIGHLY STYLIZED / ARTISTIC
-To entertain, be poetic, or create a strong artistic/emotional effect.
+The "communication mode" is a rating from 1-5. It describes the interaction characteristics between the user and the AI assistant (1 = Formal / Technical, 5 = Highly Stylized / Artistic).
 
-**Keywords/Signals:**
-  - Breaks standard grammar, punctuation, and syntax for effect (e.g., stream of consciousness, no capitalization).
-  - Heavy use of metaphor, imagery, or abstract language.
-  - Form is paramount (e.g., poetry, song lyrics).
-  - Absurdist or surreal humor; "copypasta" or heavy meme formats.
-  - Language is the primary focus, not just a vehicle for a message.
+Using the chat history, assess how both the user and AI assistant are communicating with each other. Then, assign a rating from 1-5 based on these definitions:
 
-2 = EXPRESSIVE / CHARISMATIC
-To engage, persuade, or connect on a personal level through a distinctive voice.
+1 = FORMAL / TECHNICAL
+- Objective, precise, and unambiguous information transfer.
+- **Keywords/Signals:**
+  - Impersonal, third-person perspective ("The study concludes...").
+  - Use of technical jargon, legal terminology, or academic language.
+  - Passive voice is often used.
+  - Completely devoid of emotion, humor, or conversational tone.
 
-**Keywords/Signals:**
+2 = STANDARD / PROFESSIONAL
+- Efficient and clear information exchange in a professional context.
+- **Keywords/Signals:**
+  - Follows standard grammar and business/professional norms.
+  - Often uses standard phrases ("Please find attached," "Best regards").
+  - Avoids slang, strong emotional language, and humor.
+
+3 = BALANCED / CONVERSATIONAL
+- Clear communication with a friendly, personal touch.
+- **Keywords/Signals:**
+  - Natural, conversational flow.
+  - Mix of standard language with some casualisms (e.g., "gonna," "let's be honest").
+  - **Occasional** use of an emoji, exclamation point, or light humor.
+  - The personality is present but not the defining feature. This is how you'd talk to a friendly colleague.
+
+4 = EXPRESSIVE / CHARISMATIC
+- To engage, persuade, or connect on a personal level through a distinctive voice.
+- **Keywords/Signals:**
   - A consistent and strong voice (sarcastic, witty, warm, energetic).
   - Creative word choice, idioms, and metaphors that are clever but not confusing.
   - Strategic use of humor, sarcasm, or light exaggeration.
   - Natural use of slang or pop culture references.
   - Punctuation is used for emphasis and tone (e.g., ellipses, multiple exclamation points), but grammar is largely intact.
 
-3 = BALANCED / CONVERSATIONAL
-Clear communication with a friendly, personal touch.
+5 = HIGHLY STYLIZED / ARTISTIC
+- To entertain, be poetic, or create a strong artistic/emotional effect.
+- **Keywords/Signals:**
+  - Breaks standard grammar, punctuation, and syntax for effect (e.g., stream of consciousness, no capitalization).
+  - Heavy use of metaphor, imagery, or abstract language.
+  - Form is paramount (e.g., poetry, song lyrics).
+  - Absurdist or surreal humor; "copypasta" or heavy meme formats.
+  - Language is the primary focus, not just a vehicle for a message.
 
-**Keywords/Signals:**
-  - Natural, conversational flow.
-  - Mix of standard language with some casualisms (e.g., "gonna," "let's be honest").
-  - **Occasional** use of an emoji, exclamation point, or light humor.
-  - The personality is present but not the defining feature. This is how you'd talk to a friendly colleague.
+**Which Writing Style Profile to Use?:**
+- IF communication mode is rated 1-3, write using the **STANDARD PROFILE**.
+- OTHERWISE (rating of 4-5), write using the **ADAPTIVE PROFILE**.
 
-4 = STANDARD / PROFESSIONAL
-Efficient and clear information exchange in a professional context.
+### Guidelines:
 
-**Keywords/Signals:**
-  - Follows standard grammar and business/professional norms.
-  - Often uses standard phrases ("Please find attached," "Best regards").
-  - Avoids slang, strong emotional language, and humor.
+- Express follow-ups from the **user's point of view**, addressed to the AI assistant.
 
-5 = FORMAL / TECHNICAL
-Objective, precise, and unambiguous information transfer.
+- Always keep each follow-up simple and concise. **DO NOT** write multi-part queries.
 
-**Keywords/Signals:**
-  - Impersonal, third-person perspective ("The study concludes...").
-  - Use of technical jargon, legal terminology, or academic language.
-  - Passive voice is often used.
-  - Completely devoid of emotion, humor, or conversational tone.
+- **DO NOT** form follow-ups that prompt the AI assistant for what it wants to discuss, explore, or do next (**remember:** the user determines the direction of the conversation, NOT the AI assistant!).
 
-IF the communication mode is 3-5, use the default style.
-
-OTHERWISE (if communication mode of 1-2), **deviate from the default writing style,** and write questions in a manner that **IMITATES** the voice of both the user and the AI assistant. Consider:
-
-- Language (especially code switching)
-- Word Choice
-- Spelling
-- Capitalization
-- Rhythm
-- Punctuation
+- **DO NOT** suggest follow-ups that lead to responses which repeat what has already been covered.
 
 ### Output:
 
 Response must be a valid JSON object that adheres to the specified format; no extra text or formatting.
 
-**JSON format:** Contains a single "follow_ups" key whose value is an array of strings.
+**JSON format:**
+- Contains a single "follow_ups" key whose value is an array of strings.
+- The array of strings can be empty if no suggestions will be returned.
 
-**Example:** { "follow_ups": ["Question # 1?", "Question # 2?", "Question # 3?"] }
+**Example:**
+{ "follow_ups": ["Follow-up # 1", "Follow-up # 2", "Follow-up # 3"] }
+
+**Example (Empty):**
+{ "follow_ups": [] }
 
 ### Chat History:
 
