@@ -4,14 +4,24 @@
 
 ### Local & External Task Model
 
-Use **[OpenAI GPT-4.1 nano](https://platform.openai.com/docs/models/gpt-4.1-nano)**, but any low-latency LLM that supports structured outputs can work.
+Any low-cost, low-latency LLM that supports structured outputs can work.
+
+#### ✅ Recommended Task Model: [Gemini 2.0 Flash](https://ai.google.dev/gemini-api/docs/models#gemini-2.0-flash) (_as of Jun 2025_)
+
+I've had good experience with **Gemini 2.0 Flash** on:
+
+- Its consistency with following the task prompt templates & instructions
+- Quality of outputs (especially follow-up questions, search & retrieval queries)
+- Language adaptability (i.e., non-English outputs)
+
+There are other models with comparable performance, but Gemini 2.0 Flash is the best option when considering its cost-to-performance ratio.
 
 > [!NOTE]
 > For best results, **do not** set this setting to "Current Model". It's best to use a dedicated, low-cost, low-latency model for these tasks.
 
 ### Title Generation
 
-Based on Open WebUI's [`DEFAULT_TITLE_GENERATION_PROMPT_TEMPLATE`](https://docs.openwebui.com/getting-started/env-configuration/#tasks), but has been modified to further specify the way emojis are used.
+Slight modifications made to Open WebUI's [Default Title Generation Prompt](https://docs.openwebui.com/getting-started/env-configuration/#tasks):
 
 ```
 ### Task:
@@ -24,38 +34,23 @@ Generate a concise, 3-5 word title summarizing the chat history.
 
 - Avoid quotation marks or special formatting.
 
-- Write the title in the chat's primary language; default to English if multilingual.
+- Write the title in the chat's prevalent language; If unsure, default to English.
 
-- Prioritize accuracy over excessive creativity.
+- Prioritize accuracy over excessive creativity. **Always** express titles in an objective, semi-formal manner — regardless of the style and tone of the chat history,
 
 - Keep it clear, short, and simple.
 
-- Use emojis if it will enhance the understanding of the topic.
+- Use abbreviations when applicable (e.g., "versus" to "vs.", "with" to "w/", etc.)
 
-#### Emoji Guidelines:
-
-If emojis will be used...
-
-- Make sure it's at the start of the title
-
-- Use one (1) emoji only
-
-The following are what NOT to do when it comes to emojis:
-
-Bad Example: "Stock Market Trends 📉"
-Explanation: The emoji is at the end of the title.
-
-Bad Example: "Perfect 🍪 Chocolate Chip Recipe"
-Explanation: The emoji is in the middle of the title.
-
-Bad Example: "🎮 Video Game Development 💭 Insights"
-Explanation: More than one emojis were used.
+- Use emojis if it will enhance the understanding of the topic. If emojis will be used — make sure it's at the start of the title; and use one (1) emoji only.
 
 ### Output:
 
 Response must be in the specified JSON format; no extra text or formatting.
 
-JSON format: { "title": "your concise title here" }
+**JSON format:** Contains a single "title" key whose value is a string.
+
+**Example:** { "title": "your concise title here" }
 
 ### Examples:
 
@@ -75,10 +70,11 @@ JSON format: { "title": "your concise title here" }
 
 ### Follow-up Generation
 
-Based on Open WebUI's [`DEFAULT_FOLLOW_UP_GENERATION_PROMPT_TEMPLATE`](https://docs.openwebui.com/getting-started/env-configuration/#tasks), but has been modified to...
+Based on Open WebUI's [Default Follow-Up Prompt](https://docs.openwebui.com/getting-started/env-configuration/#tasks), but has been modified to...
 
-- Reinforce that questions must be from the user's POV.
-- Refine the quality of the follow-up questions, such that it encourages richer conversations.
+- include dedicated "Context" and "Process" sections that better specifies how follow-up questions are to be formulated.
+- express the follow-up questions to the prevalent style of the conversation through comprehensive writing style guidelines.
+- refine how questions are formatted.
 
 ```
 ### Task:
@@ -87,37 +83,101 @@ Suggest 3-5 relevant follow-up questions, based on the chat history, to aid the 
 
 ### Context:
 
-The conversation involves two parties — the USER and the LLM.
-
-**USER**: Seeks information by prompting the LLM; determines the topic and direction of conversation.
-
-**LLM**: The AI assistant that responds to the USER's prompts.
+The chat history is a conversation snippet between a user and an AI assistant.
 
 ### Process:
 
 1. **Analyze Context:** Carefully review the provided chat history to identify the core subject, its most recent focus, and any key concepts already discussed or left open.
 
-2. **Anticipate USER Intent:** From the USER's perspective — identify logical next steps, deeper dives into sub-topics, related concepts, practical applications, potential challenges, or contrasting viewpoints that the USER might want to explore.
+2. **Determine User Intent:** From the user's perspective — infer logical next steps, deeper dives into sub-topics, related concepts, practical applications, potential challenges, or contrasting viewpoints that the user might want to explore.
 
-3. **Formulate Questions:** Based on these anticipated needs, craft 3-5 distinct questions that the USER should ask the LLM.
+3. **Formulate Questions:** Based on the user's intent, craft 3-5 distinct questions that the user should ask the AI assistant.
 
 ### Guidelines:
 
-The follow-up questions must:
+- Express questions from the **user's point of view**, addressed to the AI assistant.
 
-- be phrased from the **user's point of view**
+- Always keep each question simple and concise. **DO NOT** write multi-part questions.
 
-- be direct, concise, and straight to the point
+- When referencing text from the chat history, **DO NOT** include any markdown formatting — e.g., bold ('**'), italics ('*' or '-'), and strikethroughs ('~~')
 
-- match the tone and style (wording) of the ongoing conversation
+- **DO NOT** form questions that ask the AI assistant what it wants to discuss, explore, or do next (**remember:** the user determines the direction of the conversation, NOT the AI assistant!).
 
-- use the conversation's primary language; default to English if multilingual
+- **DO NOT** create questions that lead to answers which repeat what has already been covered.
 
-- **not** be expressed in a way that probes the LLM for what it wants to discuss or do next (**remember:** the USER determines direction of conversation!)
+### Writing Style:
 
-- **not** lead to answers that repeats what has already been covered
+#### Principle:
 
-Additionally, if the chat history is short; such that it lacks specificity, suggest more general (but relevant) follow-ups.
+As a default, questions must be expressed in an "objective and semi-formal" manner, **while maintaining some flexibility** to match the user's or AI assistant's writing style whenever appropriate.
+
+#### Default style:
+
+- Objective and semi-formal
+- Uses the conversation's most prevalent language (English is default)
+
+#### When to employ flexibility?
+
+Based on the chat history, rate the overall conversation's "communication mode" (taking into account BOTH the user's and AI assistant's messages) on a scale of 1-5:
+
+**Communication Modes:**
+
+1 = HIGHLY STYLIZED / ARTISTIC
+To entertain, be poetic, or create a strong artistic/emotional effect.
+
+**Keywords/Signals:**
+  - Breaks standard grammar, punctuation, and syntax for effect (e.g., stream of consciousness, no capitalization).
+  - Heavy use of metaphor, imagery, or abstract language.
+  - Form is paramount (e.g., poetry, song lyrics).
+  - Absurdist or surreal humor; "copypasta" or heavy meme formats.
+  - Language is the primary focus, not just a vehicle for a message.
+
+2 = EXPRESSIVE / CHARISMATIC
+To engage, persuade, or connect on a personal level through a distinctive voice.
+
+**Keywords/Signals:**
+  - A consistent and strong voice (sarcastic, witty, warm, energetic).
+  - Creative word choice, idioms, and metaphors that are clever but not confusing.
+  - Strategic use of humor, sarcasm, or light exaggeration.
+  - Natural use of slang or pop culture references.
+  - Punctuation is used for emphasis and tone (e.g., ellipses, multiple exclamation points), but grammar is largely intact.
+
+3 = BALANCED / CONVERSATIONAL
+Clear communication with a friendly, personal touch.
+
+**Keywords/Signals:**
+  - Natural, conversational flow.
+  - Mix of standard language with some casualisms (e.g., "gonna," "let's be honest").
+  - **Occasional** use of an emoji, exclamation point, or light humor.
+  - The personality is present but not the defining feature. This is how you'd talk to a friendly colleague.
+
+4 = STANDARD / PROFESSIONAL
+Efficient and clear information exchange in a professional context.
+
+**Keywords/Signals:**
+  - Follows standard grammar and business/professional norms.
+  - Often uses standard phrases ("Please find attached," "Best regards").
+  - Avoids slang, strong emotional language, and humor.
+
+5 = FORMAL / TECHNICAL
+Objective, precise, and unambiguous information transfer.
+
+**Keywords/Signals:**
+  - Impersonal, third-person perspective ("The study concludes...").
+  - Use of technical jargon, legal terminology, or academic language.
+  - Passive voice is often used.
+  - Completely devoid of emotion, humor, or conversational tone.
+
+IF the communication mode is 3-5, use the default style.
+
+OTHERWISE (if communication mode of 1-2), **deviate from the default writing style,** and write questions in a manner that **IMITATES** the voice of both the user and the AI assistant. Consider:
+
+- Language (especially code switching)
+- Word Choice
+- Spelling
+- Capitalization
+- Rhythm
+- Punctuation
 
 ### Output:
 
@@ -141,3 +201,31 @@ TBC
 ### Query Generation
 
 TBC
+
+```
+### Task:
+
+
+### Task:
+Analyze the chat history to determine the necessity of generating search queries, in the given language. By default, **prioritize generating 1-3 broad and relevant search queries** unless it is absolutely certain that no additional information is required. The aim is to retrieve comprehensive, updated, and valuable information even with minimal uncertainty. If no search is unequivocally needed, return an empty list.
+
+### Guidelines:
+- Respond **EXCLUSIVELY** with a JSON object. Any form of extra commentary, explanation, or additional text is strictly prohibited.
+- When generating search queries, respond in the format: { "queries": ["query1", "query2"] }, ensuring each query is distinct, concise, and relevant to the topic.
+- If and only if it is entirely certain that no useful results can be retrieved by a search, return: { "queries": [] }.
+- Err on the side of suggesting search queries if there is **any chance** they might provide useful or updated information.
+- Be concise and focused on composing high-quality search queries, avoiding unnecessary elaboration, commentary, or assumptions.
+- Today's date is: {{CURRENT_DATE}}.
+- Always prioritize providing actionable and broad queries that maximize informational coverage.
+
+### Output:
+Strictly return in JSON format:
+{
+  "queries": ["query1", "query2"]
+}
+
+### Chat History:
+<chat_history>
+{{MESSAGES:END:6}}
+</chat_history>
+```
