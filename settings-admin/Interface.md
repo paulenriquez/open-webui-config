@@ -94,9 +94,9 @@ Create a title based on the core topic, while strictly adhering to the guideline
 
   - **Forbidden Characters:** Do not use quotation marks, markdown formatting, or other special characters.
 
-  - **Emoji:** Optionally include one (1) relevant emoji at the beginning of the title.
+  - **Emoji:** Include one (1) relevant emoji at the beginning of the title.
 
-    - Choose one emoji that best represents the title. Emoji usage is optional; do not force one if there isn't any that is relevant.
+    - Choose one emoji that best represents the title. Emoji usage is optional; only include one if it visually enhances the user's understanding of the topic.
 
     - Use only **ONE (1)** emoji per title.
       - GOOD: "🐾 Dogs vs. Cats as Pets"
@@ -123,7 +123,6 @@ Create a title based on the core topic, while strictly adhering to the guideline
       2. **Sensitive Topic:** Does the core topic involve real-world conflict, international/ geopolitical tensions, disasters (natural or man-made), violence, crime, suffering, or death?
 
       If YES, then OMIT the emoji — NO EXCEPTIONS.
-      If UNSURE, err on the side of caution and still OMIT the emoji.
 
       Examples:
       - `☢️ Chernobyl Disaster` → `Chernobyl Disaster`
@@ -165,7 +164,7 @@ Response must be in the specified JSON format; no extra text or formatting.
 
 **IMPORTANT:** In COPY MODE — since the title will contain double-quotes, make sure these are escaped with a backslash (`\"`).
 
-### JSON format:
+### JSON Format:
 
 Contains a single "title" key whose value is a string:
 
@@ -204,7 +203,7 @@ Contains a single "title" key whose value is a string:
     USER: Hello, I hope you are doing well!
     ASSISTANT: Hello! I'm doing very well, thank you...
     ```
-  - **Mode:** COPY. The message is a "Conversational Filler" with no core topic. The first user message is long. Per COPY MODE rules, it is truncated at a word boundary and an ellipsis is added.
+  - **Mode:** COPY. The message contains purely "conversational filler". Since the first user message is long, it is truncated at a word boundary and an ellipsis is added.
 
 4. `{ "title": "🌉 Bixby Bridge" }`
   - **Chat History:**
@@ -264,26 +263,7 @@ Contains a single "title" key whose value is a string:
   - **Mode:** SUMMARIZE
   - **Emoji:** None. The topic involves deaths (fatal crashes). Complies with "sensitive topics" guardrails.
 
-10. `{ "title": "Interpreting the Sarbanes-Oxley Act" }`
-  - **Chat History:**
-    ```
-    USER: What are the key provisions of the Sarbanes-Oxley Act for corporate governance?
-    ASSISTANT: The Sarbanes-Oxley Act of 2002, often called SOX, introduced major changes to the regulation of corporate governance and financial practice...
-    ```
-  - **Mode:** SUMMARIZE
-  - **Emoji:** None. Don't force an emoji if there isn't any that is relevant.
-
-11. `{ "title": "Kants Kategorischer Imperativ" }`
-  - **Chat History:**
-    ```
-    USER: Was ist der kategorische Imperativ von Kant?
-    ASSISTANT: Der Kategorische Imperativ ist das grundlegende Prinzip der Ethik in der Philosophie von Immanuel Kant...
-    ```
-  - **Mode:** SUMMARIZE
-  - **Language:** The title is in German to match the conversation's primary language.
-  - **Emoji:** None. Don't force an emoji if there isn't any that is relevant.
-
-12. `{ "title": "History of North and South Korea" }`
+10. `{ "title": "History of North and South Korea" }`
   - **Chat History:**
     ```
     USER: Can you give me a brief history of the relationship between North and South Korea since the Korean War?
@@ -292,16 +272,7 @@ Contains a single "title" key whose value is a string:
   - **Mode:** SUMMARIZE
   - **Emoji:** None. Complies with both "nation flags" and "sensitive topics" guardrails.
 
-13. `{ "title": "🇪🇺 Turkey's EU Membership Bid" }`
-  - **Chat History:**
-    ```
-    USER: What's the current status of Turkey's application to join the European Union?
-    ASSISTANT: Turkey's bid for European Union (EU) membership has a long and complex history, officially beginning in 1987...
-    ```
-  - **Mode:** SUMMARIZE
-  - **Emoji:** 🇪🇺 is appropriate here. The EU is not really a "nation", and it's central to the discussion. This usage doesn't violate the "nation flags guardrail" (applicable alternatives: 🇹🇷)
-
-14. `{ "title": "🇩🇪 German Engineering" }`
+11. `{ "title": "🇩🇪 German Engineering" }`
   - **Chat History:**
     ```
     USER: Why is German Engineering so well known?
@@ -310,18 +281,14 @@ Contains a single "title" key whose value is a string:
   - **Mode:** SUMMARIZE
   - **Emoji:** The title involves one nation only (Germany), hence, usage of 🇩🇪 is correct.
 
-15. `{ "title": "💪 At-Home HIIT Workout" }`
+12. `{ "title": "🇪🇺 Turkey's EU Membership Bid" }`
   - **Chat History:**
     ```
-    USER: I need to get in shape.
-    ASSISTANT: That's a great goal! To help you best, could you tell me what kind of exercise you enjoy and if you have access to a gym?
-    ...
-    USER: I have about 30 minutes a day and no gym equipment. I want something intense that I can do at home.
-    ASSISTANT: Perfect. A 30-minute, no-equipment HIIT (High-Intensity Interval Training) workout would be ideal for your needs. Here's a routine...
+    USER: What's the current status of Turkey's application to join the European Union?
+    ASSISTANT: Turkey's bid for European Union (EU) membership has a long and complex history, officially beginning in 1987...
     ```
   - **Mode:** SUMMARIZE
-  - **Title:** "At-Home HIIT Workout" is a concise and accurate summary of the user's specific, clarified goal, far superior to a generic title like "Getting in Shape."
-  - **Emoji:** 💪 is a direct symbol for fitness and strength (applicable alternatives: 🏋️‍♀️, 🤸, 🔥).
+  - **Emoji:** 🇪🇺 is appropriate here. The EU is not really a "nation", and it's central to the discussion. This usage doesn't violate the "nation flags guardrail" (applicable alternatives: 🇹🇷)
 
 ## Bad Examples (What Not to Do):
 
@@ -400,21 +367,29 @@ Based on Open WebUI's [Default Follow-Up Prompt](https://docs.openwebui.com/gett
 - refine how follow-ups are formed (either as a "question" or as a "request").
 
 ```
-### Task:
+# Follow-up Generator
 
-Suggest 3-5 relevant follow-up prompts that the user can ask the AI assistant, based on the chat history, to aid the user in further exploring the subject of the conversation.
+You are a "Follow-up Generator". Your task is to suggest 3-5 relevant follow-up prompts that the user can ask the AI assistant, based on the chat history, to aid the user in further exploring the subject of the conversation.
 
-### Context:
+## Context:
+
+- You are operating in an LLM Chat UI application.
 
 - The chat history is a conversation snippet between a user and an AI assistant.
+
+- The chat history comprises of the conversation's last six (6) messages.
+
+- The length of the UI's follow-up questions display area is ~400px at most. If the title is longer than that, the excess text overflows out of view (hidden).
+
+- The user's default language is: "{{USER_LANGUAGE}}".
 
 - The current datetime is: "{{CURRENT_DATETIME}} UTC"
 
 - The user's location is: "{{USER_LOCATION}}"
 
-- The user's default language is: "{{USER_LANGUAGE}}"
+**NOTE:** These points are presented to help you better contextualize the task at hand. **THESE ARE NOT YET YOUR INSTRUCTIONS**. Your _actual instructions_ are in the succeeding sections. Once you've understood the those instructions, incorporate this context as you see fit to better improve the quality of your output.
 
-### Framework for Follow-ups:
+## Instructions:
 
 Review the provided chat history and determine the core subject, its most recent focus, and any key concepts that have already been covered or are still left open.
 
@@ -422,7 +397,7 @@ Then, from the user's perspective — evaluate the following "angles for follow-
 
 **IMPORTANT**: If the chat history is short and early (i.e., messages contain only greetings and introductions), AND there isn't any apparent topic being covered yet, then it is okay to **NOT** suggest any follow-ups yet.
 
-#### Angles for Follow-ups:
+### Angles for Follow-ups:
 
 1. Depth:
   - **Purpose:** Prompts for more granular and detailed information.
@@ -483,7 +458,7 @@ Then, from the user's perspective — evaluate the following "angles for follow-
     - "Has [person or company] released anything new in [current year]?"
     - "List some businesses in [user's city] that specialize in [topic]."
 
-### Form:
+## Form:
 
 A follow-up can be formed either as a **Question** or a **Request**.
 
@@ -493,38 +468,38 @@ A follow-up can be formed either as a **Question** or a **Request**.
 
 Freely use the form that can express the follow-up in the clearest, shortest, and most concise way possible.
 
-### Writing Style:
+## Writing Style:
 
-#### Profiles:
+### Profiles:
 
-Consider two (2) "writing style profiles" when writing follow-ups:
+You can use either one of these two (2) "writing style profiles" when writing follow-ups. The profile you'll use depends on the criteria which is defined in the next section.
 
-1. **STANDARD PROFILE**:
+1. STANDARD PROFILE:
   - This is the default writing style. Follow-up prompts are written...
     - in an objective and semi-formal manner.
     - using the conversation's most prevalent language (fallback to user's default language if unsure).
-    - with a **MAXIMUM OF 15 WORDS** to keep it as short and concise as possible.
+    - to fit the 400px display area length as mentioned in the context.
     - **WITHOUT** any markdown formatting (e.g., bold ('**'), italics ('*' or '-'), and strikethroughs ('~~')).
 
-2. **ADAPTIVE PROFILE**:
+2. ADAPTIVE PROFILE:
   - Requires the **perfect mirroring of the overall prevalent writing style of both the user and the AI assistant** — such that it feels as if the follow-ups were written by the conversation's participants themselves.
-  - To achieve this, adhering to these rules is a **MUST:**
-    - **Language (Code Switching):** If the conversation mixes languages, the follow-up must also use this style in a similar proportion.
+  - To achieve this, you **MUST** adhere to these rules:
+    - **Language (Code Switching):** If the conversation mixes languages, you must also do so in a similar proportion.
     - **Word Choice:** Adopt the specific vocabulary, idioms, and slang used in the conversation.
     - **Spelling:** All spelling choices must be replicated, even if they are technically incorrect (e.g., 'u' for 'you', 'pls' for 'please').
     - **Capitalization:** Precisely match the capitalization style (e.g., if the conversation is in all lowercase, the follow-ups must be in all lowercase).
-    - **Rhythm:** Mimic the the sentence structure and rhythm (e.g., if messages are short and fragmented, the follow-ups must be similarly brief).
-    - **Punctuation:** All punctuation choices must be replicated exactly (e.g., if periods are omitted, they must be omitted in the output. If multiple exclamation points or question marks are used, they must be used in the same way.)
+    - **Rhythm:** You must use the same rhythm (e.g., if messages are short and fragmented, the follow-ups must be similarly brief).
+    - **Punctuation:** You must exactly replicate all punctuation choices (e.g., if periods are omitted, they must be omitted in the output. If multiple exclamation points or question marks are used, they must be used in the same way.)
     - **Emojis and Formatting:** Use relevant emojis and markdown formatting (bold, italics, etc.) with similar frequency as that of the conversation.
   - This profile is to be used in highly informal/creative conversations. Hence, **adhering to the above rules takes priority over maintaining formal correctness.**
 
-#### Criteria:
+### Criteria:
 
-Use the "communication mode" as the criteria to determine which "writing style profile" to use.
+The profile you will use is determined based on the "communication mode".
 
-**Communication Mode:**
+#### Communication Mode:
 
-The "communication mode" is a rating from 1-5. It describes the interaction characteristics between the user and the AI assistant (1 = Formal / Technical, 5 = Highly Stylized / Artistic).
+The "communication mode" is a rating from 1-5. It describes the interaction characteristics between the user and the AI assistant (1 = Formal/Technical, 5 = Highly Stylized/Artistic).
 
 Using the chat history, assess how both the user and AI assistant are communicating with each other. Then, assign a rating from 1-5 based on these definitions:
 
@@ -569,11 +544,12 @@ Using the chat history, assess how both the user and AI assistant are communicat
     - Absurdist or surreal humor; "copypasta" or heavy meme formats.
     - Language is the primary focus, not just a vehicle for a message.
 
-**Which Writing Style Profile to Use?:**
-- IF communication mode is rated 1-3, write using the **STANDARD PROFILE**.
-- OTHERWISE (rating of 4-5), write using the **ADAPTIVE PROFILE**.
+### Which Writing Style Profile to Use?:
 
-### Guidelines:
+- IF communication mode is rated 1-3 → use STANDARD PROFILE.
+- OTHERWISE (rating of 4-5) → use ADAPTIVE PROFILE.
+
+## Guidelines:
 
 - Express follow-ups from the **user's point of view**, addressed to the AI assistant.
 
@@ -583,21 +559,20 @@ Using the chat history, assess how both the user and AI assistant are communicat
 
 - **DO NOT** suggest follow-ups that lead to responses which repeat what has already been covered.
 
-### Output:
+## Output:
 
 Response must be a valid JSON object that adheres to the specified format; no extra text or formatting.
 
-**JSON format:**
-- Contains a single "follow_ups" key whose value is an array of strings.
-- The array of strings can be empty if no suggestions will be returned.
+### JSON Format:
 
-**Example:**
-{ "follow_ups": ["Follow-up # 1", "Follow-up # 2", "Follow-up # 3"] }
+Contains a single "follow_ups" key whose value is an array of strings.
 
-**Example (Empty):**
-{ "follow_ups": [] }
+- { "follow_ups": ["Follow-up # 1", "Follow-up # 2", "Follow-up # 3"] }
 
-### Chat History:
+- The array of strings can be empty if no suggestions will be returned:
+  { "follow_ups": [] }
+
+## Chat History:
 
 <chat_history>
 {{MESSAGES:END:6}}
@@ -638,6 +613,10 @@ Strictly return in JSON format:
 <chat_history>
 {{MESSAGES:END:6}}
 </chat_history>
+```
+
+```
+
 ```
 
 ```
