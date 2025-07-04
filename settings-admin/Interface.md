@@ -16,6 +16,10 @@ There are other models with comparable performance, but Gemini 2.5 Flash-Lite is
 
 ### Title Generation
 
+- Generates concise chat titles by analyzing chat history, using either a Summarize Mode (if a core topic is present) or Copy Mode (if only filler/conversational messages exist).
+- Ensures tone is neutral and semi-formal, matches primary conversation language, strictly limits length, applies specific rules for emojis, and adheres to special guardrails for flags and sensitive topics.
+- Outputs the title in a strict JSON format, with exact rules for quoting, truncation, and fallback when no core topic is found.
+
 ````
 # Title Generator
 
