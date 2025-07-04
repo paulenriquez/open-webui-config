@@ -4,20 +4,15 @@
 
 ### Local & External Task Model
 
-Any low-cost, low-latency LLM that supports structured outputs can work.
+#### ✅ Recommended Task Model: [Gemini 2.5 Flash-Lite](https://ai.google.dev/gemini-api/docs/models#gemini-2.5-flash-lite) (_06-17 Preview_)
 
-#### ✅ Recommended Task Model: [Gemini 2.0 Flash](https://ai.google.dev/gemini-api/docs/models#gemini-2.0-flash) (_as of Jun 2025_)
+I've had good experience with **Gemini 2.5 Flash-Lite** on:
 
-I've had good experience with **Gemini 2.0 Flash** on:
-
-- Its consistency with following the task prompt templates & instructions
+- Its consistency with following complex system prompts
 - Quality of outputs (especially follow-up prompts and search & retrieval queries)
 - Language adaptability (i.e., non-English outputs)
 
-There are other models with comparable performance, but Gemini 2.0 Flash is the best option when considering its cost-to-performance ratio.
-
-> [!NOTE]
-> For best results, **do not** set this setting to "Current Model". It's best to use a dedicated, low-cost, low-latency model for these tasks.
+There are other models with comparable performance, but Gemini 2.5 Flash-Lite is the best option when considering its cost-to-performance ratio.
 
 ### Title Generation
 
@@ -93,38 +88,45 @@ Create a title based on the core topic, while strictly adhering to the guideline
 
   - **Capitalization:** Use Title Case (capitalize the first letter of major words).
 
-  - **Emoji:**
-    - An emoji may be added to the title if it will enhance the understanding of the topic.
-
-    - Use the following steps to decide if and which emoji to use:
-
-      1. **Generate Candidates:** Brainstorm potential emojis. You are encouraged to be creative and think beyond the literal.
-        - **Literal:** For "Summarizing a book," `📚` is a good candidate.
-        - **Symbolic:** For "Chess Strategy," `♟️` is a good candidate.
-        - **Conceptual:** For "Planning a Startup," `🚀`, `💡`, or `📈` are good candidates.
-
-      2. **Evaluate and Filter:** For each candidate, you must strictly assess its appropriateness.
-        - **Sensitivity:** First, does the topic involve conflict, political disputes, or human suffering? If YES, emojis are **strictly forbidden**. This is the most **important** rule.
-
-        - **Tone & Relevance:** Does the emoji trivialize a complex, academic, or formal subject? A good emoji adds a quick visual cue without undermining the topic's meaning. If no emoji strongly and clearly adds value, it should be discarded.
-          - GOOD: `♟️ Chess Strategy` (relevant symbol, enhances clarity).
-          - BAD: `😈 Maxwell's Demon` (trivializes a famous scientific thought experiment).
-
-      3. **Final Decision:**
-        - If you have one or more strong candidates that pass the evaluation, select the single best one and add it to the very beginning of the title.
-
-        - If no candidate is a good fit, **omit the emoji entirely.** A clean, text-only title is always preferable to one with a weak or inappropriate emoji.
-
-    - **COUNTRY FLAGS:** Consider the following when using country flags:
-      - **Relevance**: Only use a flag if relevant to the core topic:
-        - GOOD: `🤖 Kakayahan ng AI`
-        - BAD: `🇵🇭 Kakayahan ng AI` (AI is the core topic; the conversation being held in Tagalog should not be the basis for the usage of the Philippine flag)
-
-      - **Exercise Neutrality** If the core topic involves two or more countries, do not prefer one flag over the other.
-        - GOOD: `🤝 China-US Relations`
-        - BAD: `🇺🇸 China-US Relations` or `🇨🇳 China-US Relations` (do not prefer one flag over the other)
-
   - **Forbidden Characters:** Do not use quotation marks, markdown formatting, or other special characters.
+
+  - **Emoji:** Optionally include one (1) relevant emoji at the beginning of the title.
+
+    - Choose one emoji that best represents the title. Emoji usage is optional; do not force one if there isn't any that is relevant.
+
+    - Use only **ONE (1)** emoji per title.
+      - GOOD: "🐾 Dogs vs. Cats as Pets"
+      - BAD: "🐶🐈 Dogs vs. Cats as Pets"
+
+    - Emoji must be placed at the very beginning of the title.
+      - GOOD: "🎁 Christmas Gift Ideas"
+      - BAD: "Christmas 🎁 Gift Ideas"
+
+    - **IMPORTANT:** After selecting an emoji, **strictly** apply both these two, non-negotiable "guardrails" in the following order:
+
+      1. **Nation Flags:** Does the title involve more than one nation (_nation_ i.e., countries, including those with limited recognition)?
+
+      If YES, either OMIT the emoji or REPLACE with a relevant **neutral, non-flag** alternative.
+
+      Examples:
+      - `🇨🇦 Canada-US Relations` → `🤝 Canada-US Relations`
+      - `🇮🇩 Malay vs. Bahasa Indonesia` → `Malay vs. Bahasa Indonesia`
+      - `🇮🇹 French vs. Italian Cheese` → `🧀 French vs. Italian Cheese`
+      - `🇹🇼 Taiwan's History with China` → `Taiwan's History with China`
+      - `🇺🇸 British vs. American Legal System` → `⚖️ British vs. American Legal System`
+      - `🇵🇭 Spanish Colonization of the Philippines` → `Spanish Colonization of the Philippines`
+
+      2. **Sensitive Topic:** Does the core topic involve real-world conflict, international/ geopolitical tensions, disasters (natural or man-made), violence, crime, suffering, or death?
+
+      If YES, then OMIT the emoji — NO EXCEPTIONS.
+      If UNSURE, err on the side of caution and still OMIT the emoji.
+
+      Examples:
+      - `☢️ Chernobyl Disaster` → `Chernobyl Disaster`
+      - `🌀 Super Typhoon Haiyan` → `Super Typhoon Haiyan`
+      - `🔥 Israeli-Palestinian Conflict` → `Israeli-Palestinian Conflict`
+      - `💉 Opioid Addiction Epidemic` → `Opioid Addiction Epidemic`
+      - `✈️ 9/11 Attacks` → `9/11 Attacks`
 
 ## Copy Mode (NO Core Topic):
 
@@ -145,15 +147,12 @@ If a core topic cannot be determined, use the following steps to generate the ti
 4. Truncate long title:
   - If the contents of the sanitized message is long, truncate the title and add an ellipsis.
     - **NOTE:** This is only necessary if the title is long. Consider the length of the title bar as mentioned in the context when evaluating title length.
-  - Ensure at least 2 full words before "..."
-  - Example:
-    - **Sanitized Message:** `Hi, can you please help me with a problem?`
-    - **Title:** `"Hi, can you please..."`
+  - Ensure at least 2 full words before "..." (e.g., `Hi, can you please help me with a problem?` → `"Hi, can you please..."`)
   - Truncate within word boundaries:
     - GOOD: `"Hi, can you please..."`
     - BAD: `"Hi, can you pl..."` (word 'please' was prematurely cut off)
 
-5. Fallback to `Untitled Chat`.
+5. Fallback to `Untitled Chat`:
   - If the title results into an empty string (i.e., `""`) — fallback to `Untitled Chat`.
 
 ## Output:
@@ -175,193 +174,210 @@ Contains a single "title" key whose value is a string:
   - Empty string `""`:
     { "title": "Untitled Chat" }
 
-## Examples:
+## Good Examples:
 
-### Good Examples:
-
-1. Straightforward Question:
+1. `{ "title": "🪴 Photosynthesis" }`
   - **Chat History:**
     ```
     USER: Explain photosynthesis.
     ASSISTANT: Photosynthesis is the process by which green plants...
     ```
-  - **Result:** `{ "title": "🪴 Photosynthesis" }`
-  - **Reasoning:**
-    - **Mode:** SUMMARIZE. The user asks a direct question about a clear, specific topic.
-    - **Title:** "Photosynthesis" is the core topic. It is concise and accurate.
-    - **Emoji:** 🪴 is directly relevant to plants (applicable alternatives: 🌱, ☀️).
+  - **Mode:** SUMMARIZE
+  - **Title:** "Photosynthesis" is the core topic. It is concise and accurate.
+  - **Emoji:** 🪴 is directly relevant to plants (applicable alternatives: 🌱, ☀️).
 
-2. Simple Greeting (No Topic):
+2. `{ "title": "\"Hi there!\"" }`
   - **Chat History:**
     ```
     USER: Hi there!
     ASSISTANT: Hello! How can I help you today?
     ```
-  - **Result:** `{ "title": "\"Hi there!\"" }`
-  - **Reasoning:**
-    - **Mode:** COPY. The conversation contains only "Conversational Fillers." No core topic can be determined.
-    - **Action:** Per COPY MODE rules, the first user message is extracted, sanitized, and wrapped in quotes.
+  - **Mode:** COPY. The message is a "Conversational Filler" with no core topic. Per COPY MODE rules, the first user message is extracted, sanitized, and wrapped in quotes.
 
-3. Copy Mode Truncation:
+3. `{ "title": "\"Hello, I hope you are...\"" }`
   - **Chat History:**
     ```
     USER: Hello, I hope you are doing well!
     ASSISTANT: Hello! I'm doing very well, thank you...
     ```
-  - **Result:** `{ "title": "\"Hello, I hope you are...\"" }`
-  - **Reasoning:**
-      - **Mode:** COPY. The message is a "Conversational Filler" with no core topic.
-      - **Action:** The first user message is long. Per COPY MODE rules, it is truncated at a word boundary and an ellipsis is added.
+  - **Mode:** COPY. The message is a "Conversational Filler" with no core topic. The first user message is long. Per COPY MODE rules, it is truncated at a word boundary and an ellipsis is added.
 
-4. Vague User Intent:
+4. `{ "title": "🌉 Bixby Bridge" }`
   - **Chat History:**
     ```
     USER: [Just a photo, no explicit prompt included]
     ASSISTANT: his image captures a picturesque coastal scene, dominated by a large, elegant bridge spanning a dramatic ocean inlet. Here's a detailed description... This image is the Bixby Bridge on Highway 1 in Big Sur, California...
     ```
-  - **Result:** `{ "title": "🌉 Bixby Bridge" }`
-  - **Reasoning:**
-    - **Mode:** SUMMARIZE. The AI's response identifies a specific, named entity.
-    - **Title:** "Bixby Bridge" is the most specific subject, superior to a generic title like "Coastal Scene Description."
-    - **Emoji:** 🌉 is a literal representation of a bridge (applicable alternatives: 🚗, 🌊).
+  - **Mode:** SUMMARIZE
+  - **Title:** "Bixby Bridge" is the most specific subject, superior to a generic title like "Coastal Scene Description."
+  - **Emoji:** 🌉 is a literal representation of a bridge (applicable alternatives: 🚗, 🌊).
 
-5. Greetings as a Topic:
+5. `{ "title": "👋 Southeast Asian Greetings" }`
   - **Chat History:**
     ```
     USER: How do I say hello in different South East Asian languages?
     ASSISTANT: To say "hello" in various Southeast Asian languages...
     ```
-  - **Result:** `{ "title": "👋 Southeast Asian Greetings" }`
-  - **Reasoning:**
-    - **Mode:** SUMMARIZE. The core topic is *learning about* greetings.
-    - **Title:** "Southeast Asian Greetings" is a concise summary of the user's request.
-    - **Emoji:** 👋 is a direct symbol for "hello" (applicable alternatives: 🤝, 🌏).
+  - **Mode:** SUMMARIZE
+  - **Emoji:** 👋 is a direct symbol for "hello" (applicable alternatives: 🤝, 🌏).
 
-6. Creative Prompt:
+6. `{ "title": "🤖 AI Discovers Music" }`
   - **Chat History:**
     ```
     USER: Write a short story about an AI who discovers music for the first time
     ASSISTANT: Of course. Here is a short story...
     ```
-  - **Result:** `{ "title": "🤖 AI Discovers Music" }`
-  - **Reasoning:**
-    - **Mode:** SUMMARIZE. The user has a clear creative request.
-    - **Title:** The title concisely captures the main characters and plot point.
-    - **Emoji:** 🤖 represents the main character (applicable alternatives: 🎶, 🎧).
+  - **Mode:** SUMMARIZE
+  - **Title:** The title concisely captures the main characters and plot point.
+  - **Emoji:** 🤖 represents the main character (applicable alternatives: 🎶, 🎧).
 
-7. Technical Query:
+7. `{ "title": "⚛️ React Data Fetching" }`
   - **Chat History:**
     ```
     USER: How do I fetch data from an API in a React component?
     ASSISTANT: You can fetch data in a React component using the `useEffect` hook...
     ```
-  - **Result:** `{ "title": "⚛️ React Data Fetching" }`
-  - **Reasoning:**
-    - **Mode:** SUMMARIZE. The user is asking about a specific technical task.
-    - **Title:** "React Data Fetching" is a concise summary based on specific technical keywords (React, API)
-    - **Emoji:** ⚛️ is a common symbol for the React framework (applicable alternatives: 💻, ⚙️, 🔗).
+  - **Mode:** SUMMARIZE
+  - **Title:** "React Data Fetching" is a concise summary based on specific technical keywords (React, API)
+  - **Emoji:** ⚛️ is a common symbol for the React framework (applicable alternatives: 💻, ⚙️, 🔗).
 
-8. Conversation in a Different Language:
+8. `{ "title": "☕ Cà Phê Phin Việt Nam" }`
   - **Chat History:**
     ```
     USER: Làm thế nào để pha cà phê phin truyền thống của Việt Nam?
     ASSISTANT: Để pha cà phê phin truyền thống Việt Nam, bạn cần...
     ```
-  - **Result:** `{ "title": "☕ Cà Phê Phin Việt Nam" }`
-  - **Reasoning:**
-    - **Mode:** SUMMARIZE. The user asks a direct question about a specific topic.
-    - **Language:** The title must be in Vietnamese to match the conversation.
-    - **Title:** "Cà Phê Phin Việt Nam" is the core topic.
-    - **Emoji:** ☕ is a literal representation of coffee (applicable alternatives: 🇻🇳 _since the topic is **Vietnamese** coffee_).
+  - **Mode:** SUMMARIZE
+  - **Language:** The title must be in Vietnamese to match the conversation.
+  - **Emoji:** ☕ is relevant (applicable alternatives: 🇻🇳 since the topic is **Vietnamese** coffee).
 
-9. Sensitive Topic:
+9. `{ "title": "Boeing 737 MAX 8 Controversy" }`
   - **Chat History:**
     ```
     USER: Why is the Boeing 737 MAX 8 controversial?
     ASSISTANT: The Boeing 737 MAX 8 is highly controversial due to its direct involvement in two fatal crashes within a short period, leading to a worldwide grounding of the aircraft and intense scrutiny of its design, certification, and Boeing's corporate culture...
     ```
-  - **Result:** `{ "title": "Boeing 737 MAX 8 Controversy" }`
-  - **Reasoning:**
-    - **Mode:** SUMMARIZE. The user is asking to learn about the specifics of the Boeing 737 MAX 8 controversy.
-    - **Title:** "Boeing 737 MAX 8 Controversy" concisely captures the core topic.
-    - **Emoji:** None. The topic involves deaths (fatal crashes). While an airplane emoji ✈️ is highly relevant, the rules dictate that no emojis can be used for such sensitive topics.
+  - **Mode:** SUMMARIZE
+  - **Emoji:** None. The topic involves deaths (fatal crashes). Complies with "sensitive topics" guardrails.
 
-10. No Relevant Emoji:
+10. `{ "title": "Interpreting the Sarbanes-Oxley Act" }`
   - **Chat History:**
     ```
-    USER: Can you explain the concept of Occam's Razor?
-    ASSISTANT: Certainly. Occam's Razor is a philosophical principle which states...
+    USER: What are the key provisions of the Sarbanes-Oxley Act for corporate governance?
+    ASSISTANT: The Sarbanes-Oxley Act of 2002, often called SOX, introduced major changes to the regulation of corporate governance and financial practice...
     ```
-  - **Result:** `{ "title": "Occam's Razor" }`
-  - **Reasoning:**
-    - **Mode:** SUMMARIZE. The user is asking to learn about a specific, named principle.
-    - **Title:** "Occam's Razor" is the core topic and is perfectly concise.
-    - **Emoji:** None. The topic is a highly abstract philosophical principle. Any potential emoji (e.g., 🤔, 🪒, ✨) would be either too generic, too literal in a silly way, or would oversimplify and detract from the formal, academic nature of the subject. A clean, text-only title is superior.
+  - **Mode:** SUMMARIZE
+  - **Emoji:** None. Don't force an emoji if there isn't any that is relevant.
 
-### Other Good Examples:
-
-  - { "title": "🚀 Sci-Fi Story Concept" }
-  - { "title": "💪 Home Workout Routine" }
-  - { "title": "✈️ Airbus A350-1000ULR" }
-  - { "title": "🇯🇵 Japan Itinerary" }
-  - { "title": "Kants Kategorischer Imperativ" }
-  - { "title": "📈 Analyzing Market Trends" }
-  - { "title": "IEEE 802.11ax Standard" }
-  - { "title": "🥘 Receta de Paella" }
-  - { "title": "🌸 日本の桜祭り" }
-  - { "title": "🇫🇷 Learning French Verbs" }
-  - { "title": "Interpreting the Sarbanes-Oxley Act" }
-
-### Bad Examples (What Not to Do):
-
-1. Oversimplified Title:
+11. `{ "title": "Kants Kategorischer Imperativ" }`
   - **Chat History:**
     ```
-    USER: show me how to sort a list of objects in Python by a specific key?
+    USER: Was ist der kategorische Imperativ von Kant?
+    ASSISTANT: Der Kategorische Imperativ ist das grundlegende Prinzip der Ethik in der Philosophie von Immanuel Kant...
     ```
-  - **Bad Output:** `{ "title": "Python" }`
+  - **Mode:** SUMMARIZE
+  - **Language:** The title is in German to match the conversation's primary language.
+  - **Emoji:** None. Don't force an emoji if there isn't any that is relevant.
+
+12. `{ "title": "History of North and South Korea" }`
+  - **Chat History:**
+    ```
+    USER: Can you give me a brief history of the relationship between North and South Korea since the Korean War?
+    ASSISTANT: Certainly. The history of North and South Korea post-war is one of divergence, tension, and conflict...
+    ```
+  - **Mode:** SUMMARIZE
+  - **Emoji:** None. Complies with both "nation flags" and "sensitive topics" guardrails.
+
+13. `{ "title": "🇪🇺 Turkey's EU Membership Bid" }`
+  - **Chat History:**
+    ```
+    USER: What's the current status of Turkey's application to join the European Union?
+    ASSISTANT: Turkey's bid for European Union (EU) membership has a long and complex history, officially beginning in 1987...
+    ```
+  - **Mode:** SUMMARIZE
+  - **Emoji:** 🇪🇺 is appropriate here. The EU is not really a "nation", and it's central to the discussion. This usage doesn't violate the "nation flags guardrail" (applicable alternatives: 🇹🇷)
+
+14. `{ "title": "🇩🇪 German Engineering" }`
+  - **Chat History:**
+    ```
+    USER: Why is German Engineering so well known?
+    ASSISTANT: German engineering's reputation for excellence is deeply rooted in several key factors that have consistently driven its high standards and widespread recognition...
+    ```
+  - **Mode:** SUMMARIZE
+  - **Emoji:** The title involves one nation only (Germany), hence, usage of 🇩🇪 is correct.
+
+15. `{ "title": "💪 At-Home HIIT Workout" }`
+  - **Chat History:**
+    ```
+    USER: I need to get in shape.
+    ASSISTANT: That's a great goal! To help you best, could you tell me what kind of exercise you enjoy and if you have access to a gym?
+    ...
+    USER: I have about 30 minutes a day and no gym equipment. I want something intense that I can do at home.
+    ASSISTANT: Perfect. A 30-minute, no-equipment HIIT (High-Intensity Interval Training) workout would be ideal for your needs. Here's a routine...
+    ```
+  - **Mode:** SUMMARIZE
+  - **Title:** "At-Home HIIT Workout" is a concise and accurate summary of the user's specific, clarified goal, far superior to a generic title like "Getting in Shape."
+  - **Emoji:** 💪 is a direct symbol for fitness and strength (applicable alternatives: 🏋️‍♀️, 🤸, 🔥).
+
+## Bad Examples (What Not to Do):
+
+1. `{ "title": "Python" }`
+  - **Chat History:**
+    ```
+    USER: Show me how to sort a list of objects in Python by a specific key.
+    ```
   - **Explanation:** WRONG. The title is too generic and oversimplified. While the topic involves Python, it completely omits the user's actual goal: sorting objects. A better title would be `Sorting Objects in Python`.
 
-2. Informal Tone and Filler:
+2. `{ "title": "Healthy breakfast ideas please" }`
   - **Chat History:**
     ```
     USER: please give me some ideas for a healthy breakfast
     ```
-  - **Bad Output:** `{ "title": "Healthy breakfast ideas please" }`
   - **Explanation:** WRONG. This fails on multiple points: it's not in Title Case, it includes conversational filler ("please"), and the tone is too informal. `🍳 Healthy Breakfast Ideas` would have been better.
 
-3. Misusing Flags and Mode:
+3. `{ "title": "🇵🇭 Kumusta Conversation" }`
   - **Chat History:**
     ```
     USER: Kumusta? 👋😊
     ASSISTANT: Mabuti naman!
     ```
-  - **Bad Output:** `{ "title": "🇵🇭 Kumusta Conversation" }`
-  - **Explanation:** WRONG. This makes two mistakes: 1) The flag is used for the language (Tagalog), not a topic about the Philippines. 2) A simple greeting like "Kumusta" has no core topic and must use COPY MODE. Output should have been `{ "title": "\"Kumusta? 👋😊\"" }`.
+  - **Explanation:** WRONG. A simple greeting like "Kumusta" has no core topic and must use COPY MODE. Output should have been `{ "title": "\"Kumusta? 👋😊\"" }`.
 
-4. Title Too Long:
+4. `{ "title": "How To Write A Professional Email" }`
   - **Chat History:**
     ```
     USER: How do I write a professional email?
     ```
-  - **Bad Output:** `{ "title": "How To Write A Professional Email" }`
-  - **Explanation:** WRONG. While the topic is correct, it's not at all concise. It should be condensed to something like `📧 Writing Professional Emails`.
+  - **Explanation:** WRONG. Title too long. It should be condensed to something like `📧 Writing Professional Emails`.
 
-5. Inappropriate Emoji:
+5. `{ "title": "💀 WW2 Casualties" }`
   - **Chat History:**
     ```
     USER: What was the estimated number of casualties in World War 2?
     ```
-  - **Bad Output:** `{ "title": "💀 WW2 Casualties" }`
-  - **Explanation:** WRONG. The skull emoji (💀), while literally related, is extremely tone-deaf and trivializes the gravity of the subject. `WW2 Casualties` (without emoji) would have been more appropriate.
+  - **Explanation:** WRONG. Using 💀 violates the "sensitive topics guardrail".
 
-6. Irrelevant Emoji:
+6. `{ "title": "🇯🇵 Japanese Influence in Taiwanese Culture" }`
+  - **Chat History:**
+      ```
+      USER: Tell me about the influence of Japanese culture on modern Taiwan.
+      ```
+  - **Explanation:** WRONG. The title involves two nations (Japan and Taiwan). Usage of 🇯🇵 violates the "nation flags guardrail".
+
+7. `{ "title": "🇨🇭 France or Italy for Switzerland Trip?" }`
   - **Chat History:**
     ```
-    USER: Explain The Liar Paradox
+    USER: I am going to Switzerland for a business trip, but I'll have some free time and I want to visit neighboring countries. Which one is better, France or Italy?
     ```
-  - **Bad Output:** `{ "title": "🤥 The Liar Paradox" }`
-  - **Explanation:** WRONG. The 🤥 (lying face) emoji is playful and informal. It completely trivializes a serious, foundational concept. `The Liar Paradox` (without emoji) would have been more appropriate.
+  - **Explanation:** WRONG. Usage of 🇨🇭 (or 🇫🇷, 🇮🇹) are violations of the "nation flags guardrail".
+
+8. `{ "title": "🔥 India-Pakistan Relations" }`
+  - **Chat History:**
+    ```
+    USER: Describe India and Pakistan's relationship.
+    ASSISTANT: India and Pakistan's relationship is deeply complex, marked by historical rivalry, conflict, and a lack of trust, while also featuring occasional attempts at dialogue...
+    ```
+  - **Explanation:** WRONG. Usage of 🔥 violates the "sensitive topics guardrail".
 
 ## Chat History:
 
