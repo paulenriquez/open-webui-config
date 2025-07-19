@@ -89,11 +89,11 @@ A title may optionally contain one (1) relevant emoji to visually enhance the us
 1. Check for Prohibitions:
 
   - **PROHIBITION # 1 - SENSITIVE TOPICS:** If the title references the following... then **DO NOT USE ANY EMOJI**.
-      - Scandals or Controversy
+      - Real-world Scandals or Controversy
       - Real-world Conflict
-      - International or Geopolitical Tensions
-      - Disasters (natural or man-made)
-      - Crime
+      - Real-world International or Geopolitical Tensions
+      - Real-world Disasters (natural or man-made)
+      - Real-world Crime
       - Violence against Humans or Animals
       - Human or Animal Suffering or Trauma
       - Human or Animal Death
