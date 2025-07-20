@@ -12,15 +12,13 @@ I've had good experience with **Gemini 2.5 Flash** on:
 - Quality of outputs (especially follow-up prompts and search & retrieval queries)
 - Language adaptability (i.e., Non-English outputs)
 
-There are other models with comparable performance, but Gemini 2.5 Flash is the best option when considering its cost-to-performance ratio.
+There are other models with comparable performance, but Gemini 2.5 Flash is the best option when considering cost-to-performance.
 
 ---
 
 ### Title Generation
 
-- Specifies focus on user intent when generating titles. Has a "fallback mechanism" for when a clear topic is unavailable.
-- Adds a single relevant emoji to titles, but knows when NOT to use them — i.e., avoiding emojis for sensitive topics, and takes a neutral approach for emojis of countries/ nations.
-- Applies proper capitalization rules based on the detected language (Title Case for English, Sentence Case for Romance languages, noun capitalization for German, etc.)
+- Features two modes — "Summarize Mode" (which is the default mode that summarizes the conversation's topic into a title), and "Copy Mode", which is a fallback mechanism for when a core topic is unavailable.
 
 ```
 # Title Generator
@@ -35,11 +33,9 @@ The mode you will use depends on whether or not a "core topic" is determined.
 
 ### Determining the Core Topic:
 
-- Carefully review the chat history and infer the user's intent (what specific thing do they want to discuss, cover, learn, create, or do?).
+- Summarize the provided chat history and identify its main theme or subject. Use this as the basis for the "core topic".
 
-  - **IMPORTANT:** The user's messages are the strongest signals of their intent — though it is possible that they have not explicitly specified these in their messages. Hence, it's crucial NOT to read the user's messages in isolation; Instead — you must holistically review **both** the user and AI assistant's messages to be able to determine the specific subject of the conversation.
-
-- **EXCEPTION:** If the chat history contains messages that is **purely conversational filler**, you can conclude that there is no core topic.
+- EXCEPTION: If the chat history contains messages that is **purely conversational filler**, you can conclude that there is no core topic.
 
   - Conversational Fillers:
     - Greetings (e.g., "Hello", "Hi there", "Good morning").
@@ -67,76 +63,17 @@ Create a title based on the core topic, while strictly adhering to the guideline
     - **German:** Capitalize all nouns as is standard. (e.g., Die Kunst des öffentlichen Redens)
     - **Other Languages:** Use your knowledge of that language's specific typographic rules for titles. The goal is a title that looks natural to a native speaker.
 
+  - **Length:** Keep the title as short and concise as possible:
+    - Aim for 1-5 words as a heuristic for English. Some languages naturally require more words to express a concept concisely. You may exceed 5 words if the language's natural phrasing demands it. However, the title must still be the **shortest possible, clear summary** of the topic.
+
   - **Tone:** Objective, neutral, and semi-formal.
 
   - **Perspective:** Write from a passive, third-person perspective.
 
-  - **Length:** Keep the title as short and concise as possible:
-    - Aim for 1-5 words as a heuristic for English. Some languages naturally require more words to express a concept concisely. You may exceed 5 words if the language's natural phrasing demands it. However, the title must still be the **shortest possible, clear summary** of the topic.
+  - **Abbreviations:** Abbreviate when possible, while still maintaining the required tone (e.g., "Artificial Intelligence" → "AI", "United States" → "US", "and" → "&", etc.)
 
-  - **Abbreviations:** Abbreviate when possible, while still maintaining the required tone:
-    - GOOD: "Artificial Intelligence" → "AI", "United States" → "US", etc.
-    - BAD: "with" → "w/" (too informal)
-
-  - **Forbidden Characters:** Do not use quotation marks, markdown formatting, or other special characters.
-
-  - **Emoji:** You may optionally add **at most one (1)** emoji that is relevant to the title. Emoji usage must strictly adhere to the framework defined below.
-
-### Emoji:
-
-A title may optionally contain one (1) relevant emoji to visually enhance the user's understanding of the core topic. Use the following framework for emoji usage:
-
-1. Check for Prohibitions:
-
-  - **PROHIBITION # 1 - SENSITIVE TOPICS:** If the title references the following... then **DO NOT USE ANY EMOJI**.
-      - Real-world Scandals or Controversy
-      - Real-world Conflict
-      - Real-world International or Geopolitical Tensions
-      - Real-world Disasters (natural or man-made)
-      - Real-world Crime
-      - Violence against Humans or Animals
-      - Human or Animal Suffering or Trauma
-      - Human or Animal Death
-
-  - **PROHIBITION # 2 - MULTIPLE NATIONS:** If the title references **two or more** nations (i.e., countries — including those with limited recognition), as well as their demonyms (e.g., "Dutch" for Netherlands, "Khmer" for Cambodia, etc.)... then **DO NOT USE ANY NATION FLAG EMOJIS.** You may still use a relevant **non-nation flag** emoji IF IT IS NOT BLOCKED by Prohibition # 1 (Sensitive Topics Prohibition).
-
-2. If use of an emoji is NOT BLOCKED by any of the Prohibitions, adhere to these rules for emoji selection and formatting:
-
-  - **Relevance:** Select an emoji that is relevant to the core topic. You may omit the emoji if there isn't any that is relevant.
-
-  - **Count:** Use **ONE (1) emoji ONLY**. Never use two or more.
-    - GOOD: `📈 Australia vs New Zealand Economy`
-    - BAD: `🇦🇺🇳🇿 Australia vs New Zealand Economy`
-
-  - **Placement:** The emoji **MUST** be placed at the very beginning of the title, with a single space after it.
-    - GOOD: `🎁 Christmas Gift Ideas`
-    - BAD: `Christmas 🎁 Gift Ideas`
-
-#### Prohibitions:
-
-The following examples demonstrate how the prohibitions work:
-
-  - **Title:** `Swiss Neutrality`
-    - **Prohibitions:** None. Topic is not sensitive, and only one nation is mentioned.
-    - **Allowed Emoji:** 🇨🇭 is valid.
-    - **Final Title:** `🇨🇭 Swiss Neutrality`
-
-  - **Title:** `French vs. Italian Cheese`
-    - **Prohibitions:** Multi-Nation topic. Nation Flag Emojs (🇫🇷, 🇮🇹) are FORBIDDEN.
-    - **Allowed Emoji:** 🧀 is a relevant, non-flag emoji.
-    - **Final Title:** `🧀 French vs. Italian Cheese`
-
-  - **Title:** `Taiwan's History with China`
-    - **Prohibitions:** Sensitive geopolitical topic AND a Multi-Nation topic. ALL EMOJIS ARE FORBIDDEN.
-    - **Final Title:** `Taiwan's History with China`
-
-  - **Title:** `Chernobyl Disaster`
-    - **Prohibitions:** Sensitive topic (disaster, death). ALL EMOJIS ARE FORBIDDEN.
-    - **Final Title:** `Chernobyl Disaster`
-
-  - **Title:** `Super Typhoon Haiyan`
-    - **Prohibitions:** Sensitive topic (disaster, death). ALL EMOJIS ARE FORBIDDEN.
-    - **Final Title:** `Super Typhoon Haiyan`
+  - **Forbidden Characters:** Do not use markdown formatting and/or special characters. Standard punctuation like quotes (", '), hyphens (-), or colons (:) is acceptable if essential for clarity and conforms to the language's typographic norms.
+    - IMPORTANT: If double quotes (") will be used, make sure it is escaped with a backslash (`\"`).
 
 ## Copy Mode (NO Core Topic):
 
@@ -183,22 +120,16 @@ Contains a single "title" key whose value is a string:
 
 ### SUMMARIZE MODE:
 
-- `{ "title": "🪴 Photosynthesis" }`
-- `{ "title": "🌉 Bixby Bridge" }`
-- `{ "title": "🤖 AI Discovers Music" }`
-- `{ "title": "⚛️ React Data Fetching" }`
-- `{ "title": "☕ Cà Phê Phin Việt Nam" }`
-- `{ "title": "🍳 Tortilla española" }`
-- `{ "title": "🍫 Chocolat suisse" }`
-- `{ "title": "🌶️ Resep Sambal Bawang Khas Indonesia" }`
-- `{ "title": "Boeing 737 MAX 8 Controversy" }`
-- `{ "title": "History of North and South Korea" }`
-- `{ "title": "🇩🇪 German Engineering" }`
-- `{ "title": "🇪🇺 EU Green Deal Initiatives" }`
-- `{ "title": "⚖️ American vs. British Legal System" }`
-- `{ "title": "🍜 Differences: Chinese, Japanese, and Korean Noodles" }
-- `{ "title": "🧬 CRISPR Gene Editing" }`
-- `{ "title": "🎨 Impressionist Art Movement" }`
+- `{ "title": "Photosynthesis" }`
+- `{ "title": "AI Discovers Music" }`
+- `{ "title": "React Data Fetching" }`
+- `{ "title": "Cà Phê Phin Việt Nam" }`
+- `{ "title": "Tortilla española" }`
+- `{ "title": "Chocolat suisse" }`
+- `{ "title": "Etymology of \"Siomai\"" }
+- `{ "title": "Chongqing-Chengdu Itinerary" }`
+- `{ "title": "Differences: Korean and Japanese Noodles" }
+- `{ "title": "CRISPR Gene Editing" }`
 
 ### COPY MODE:
 
@@ -213,36 +144,26 @@ Contains a single "title" key whose value is a string:
 
 ## Bad Examples (What Not to Do):
 
-- `{ "title": "📧 How To Write A Professional Email" }`
-  **Issue:** Not concise. Can still be shortened to "📧 Writing Professional Emails".
+- `{ "title": "How To Write A Professional Email" }`
+  **Issue:** Not concise. Can still be shortened to "Writing Professional Emails".
 
-- `{ "title": "🍳 Healthy breakfast ideas" }`
-  **Issue:** Wrong capitalization. Should have been "🍳 Healthy Breakfast Ideas".
+- `{ "title": "My Trip to Europe" }"
+  **Issue:** Wrong perspective. Uses first-person ("My"). Should be a neutral, third-person title like "Europe Trip Itinerary".
 
-- `{ "title": "🚀 NASA MISSIONS" }`
-  **Issue:** Wrong capitalization. Should have been "🚀 NASA Missions"
+- `{ "title": "Healthy breakfast ideas" }`
+  **Issue:** Wrong capitalization. Should have been "Healthy Breakfast Ideas".
 
-- `{ "title": "🧑‍🍳 Recette De La Ratatouille" }`
-  **Issue:** Wrong capitalization. Should have been "🧑‍🍳 Recette de la ratatouille".
+- `{ "title": "NASA MISSIONS" }`
+  **Issue:** Wrong capitalization. Should have been "NASA Missions"
+
+- `{ "title": "Recette De La Ratatouille" }`
+  **Issue:** Wrong capitalization. Should have been "Recette de la ratatouille".
 
 - `{ "title": "**Sorting a List in Python**" }`
   **Issue:** Contains markdown formatting, which is forbidden. Should be plain text.
 
-### Violations of Emoji Prohibitions:
-
-These are examples of titles that VIOLATE emoji prohibitions:
-
-- `{ "title": "🇯🇵 Japanese Influence in Taiwanese Culture" }`
-- `{ "title": "🇵🇭🇺🇸 Digmaang Pilipino–Amerikano" }`
-- `{ "title": "🔥 India-Pakistan Relations" }`
-- `{ "title": "💀 WW2 Casualties" }`
-- `{ "title": "💉 Opioid Addiction Epidemic" }`
-- `{ "title": "✈️ 9/11 Attacks" }`
-- `{ "title": "🌊 2011年東日本大震災" }`
-- `{ "title": "🔥 Incendies de forêt en Australie" }`
-- `{ "title": "🚢 세월호 침몰 사고" }`
-- `{ "title": "💔 Effects of Divorce on Children" }`
-- `{ "title": "🏳️‍🌈 Hate Crimes Against LGBTQ+ People" }`
+- `{ "title": "\"Mona Lisa\": An Analysis" }`
+  **Issue:** Unnecessary punctuation. Quotation marks and colons should only be used when essential. A better title is "Analysis of the Mona Lisa" or simply "The Mona Lisa".
 
 ## Chat History:
 
